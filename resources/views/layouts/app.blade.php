@@ -7,17 +7,17 @@
                 <ul>
                     <li>
                         <a href="{{ route('home') }}"
-                           class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Home</a>
+                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Home</a>
                     </li>
                 </ul>
                 <ul>
                     <li>
                         <a href="{{ route('register') }}"
-                           class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Register</a>
+                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Register</a>
                     </li>
                     <li>
                         <a href="{{ route('login') }}"
-                           class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Login</a>
+                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Login</a>
                     </li>
                 </ul>
             @endguest
@@ -54,7 +54,11 @@
 
                 <ul>
                     <li>
-                        <a href="#" class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Logout</a>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Logout</button>
+                        </form>
                     </li>
                 </ul>
             @endauth

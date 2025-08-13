@@ -6,8 +6,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
 
-Route::get('/register', [RegisterController::class, 'index'])->name('register');
-Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+Route::middleware('guest')->group(function () {
+    Route::view('/register', 'guest.register')->name('register');
+    Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+    Route::view('/login', 'guest.login')->name('login');
+    Route::post('/login', [AuthController::class, 'store'])->name('login.store');
+});
 
-Route::get('/login', [AuthController::class, 'index'])->name('login');
-Route::post('/login', [AuthController::class, 'store'])->name('login.store');
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});

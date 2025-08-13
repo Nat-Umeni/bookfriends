@@ -1,9 +1,9 @@
 <x-layout>
-    <x-slot:header>
-        Home
-    </x-slot:header>
+        <x-slot:header>
+            Bookfriends
+        </x-slot:header>
 
-    <div class="mt-8">
-        <p>Home Content</p>
-    </div>
+        <div class="mt-8">
+            <p>Sign up to get started</p>
+        </div>
 </x-layout>

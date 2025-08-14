@@ -2,7 +2,7 @@
 
 @section('body')
     <div class="max-w-4xl mx-auto px-6 grid grid-cols-8 gap-12 mt-16">
-        <aside class="col-span-2 border-r border-slate-200 space-y-6">
+        <aside class="col-span-2 border-r border-slate-200 space-y-4">
             @guest
                 <ul>
                     <li>
@@ -66,7 +66,7 @@
 
         <main class="col-span-6">
             @hasSection('header')
-                <h1 class="text-2xl font-bold text-slate-800">@yield('header')</h1>
+                <h1 class="text-2xl font-bold text-slate-600">@yield('header')</h1>
             @endif
 
             @yield('content')

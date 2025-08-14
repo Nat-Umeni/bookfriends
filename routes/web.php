@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,4 +16,12 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::prefix('/books')->name('books.')->group(function () {
+        Route::get('/', [BookController::class, 'index'])->name('index');
+
+        Route::get('/create', [BookController::class, 'create'])->name('create');
+        Route::post('/create', [BookController::class, 'store'])->name('store');
+    });
+
 });

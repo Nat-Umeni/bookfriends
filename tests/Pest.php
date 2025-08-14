@@ -45,3 +45,10 @@ function something()
 {
     // ..
 }
+
+function asUser(array $overrides = []): \App\Models\User
+{
+    $user = \App\Models\User::factory()->create($overrides);
+    test()->actingAs($user);
+    return $user;
+}

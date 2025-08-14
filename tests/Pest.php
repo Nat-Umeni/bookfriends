@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\DomCrawler\Crawler;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -28,6 +30,25 @@ pest()->extend(Tests\TestCase::class)
 
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);
+});
+
+function responseCrawler(\Illuminate\Testing\TestResponse $response): Crawler {
+    return new Crawler($response->getContent());
+}
+
+expect()->extend('toHaveInput', function (string $name) {
+    $crawler = new Crawler($this->value->getContent());
+    expect($crawler->filter("input[name='{$name}']")->count())->toBe(1);
+    return $this;
+});
+
+expect()->extend('toHaveSelectWithOptions', function (string $name, array $values) {
+    $crawler = new Crawler($this->value->getContent());
+    expect($crawler->filter("select[name='{$name}']")->count())->toBe(1);
+
+    $actual = $crawler->filter("select[name='{$name}'] option")->each(fn($n) => $n->attr('value'));
+    expect($actual)->toEqual($values);
+    return $this;
 });
 
 /*

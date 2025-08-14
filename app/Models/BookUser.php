@@ -27,6 +27,6 @@ class BookUser extends Pivot
 
     public function isValidStatus(string $status): bool
     {
-        return in_array($status, static::$allowedStatuses, true);
+        return array_key_exists($status, static::$allowedStatuses);
     }
 }

@@ -14,4 +14,12 @@ class Book extends Model
         'title',
         'author',
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(\App\Models\User::class)
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+
 }

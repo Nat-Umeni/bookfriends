@@ -28,14 +28,6 @@ pest()->extend(Tests\TestCase::class)
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
-
-function responseCrawler(\Illuminate\Testing\TestResponse $response): Crawler {
-    return new Crawler($response->getContent());
-}
-
 expect()->extend('toHaveInput', function (string $name) {
     $crawler = new Crawler($this->value->getContent());
     expect($crawler->filter("input[name='{$name}']")->count())->toBe(1);
@@ -50,6 +42,99 @@ expect()->extend('toHaveSelectWithOptions', function (string $name, array $value
     expect($actual)->toEqual($values);
     return $this;
 });
+
+
+expect()->extend('toHaveDescendantWithExactTextInTestId', function (
+    string $containerTestId,
+    string $descendantSelector,
+    string $expectedText
+) {
+    $html     = $this->value->getContent();
+    $crawler  = new Crawler($html);
+
+    $container = $crawler->filter("[data-test='{$containerTestId}']");
+    expect($container->count())
+        ->toBeGreaterThan(0, "Element with data-test=\"{$containerTestId}\" not found.");
+
+    $descendants = $container->filter($descendantSelector);
+    expect($descendants->count())
+        ->toBeGreaterThan(0, "No descendant found for selector \"{$descendantSelector}\" in [data-test=\"{$containerTestId}\"].");
+
+    $normalizedExpected = preg_replace('/\s+/', ' ', trim($expectedText));
+
+    $matches = $descendants->each(function (Crawler $node) use ($normalizedExpected) {
+        return preg_replace('/\s+/', ' ', trim($node->text())) === $normalizedExpected;
+    });
+
+    expect(in_array(true, $matches, true))->toBeTrue(
+        "No descendant \"{$descendantSelector}\" in [data-test=\"{$containerTestId}\"] has exact text \"{$expectedText}\"."
+    );
+
+    return $this;
+});
+
+/**
+ * Negative form: assert that NO descendant exists matching the selector + attributes.
+ */
+expect()->extend('toNotHaveDescendantInTestId', function (
+    string $containerTestId,
+    string $descendantSelector,
+    array $descendantAttributes = []
+) {
+    $responseHtml = $this->value->getContent();
+    $crawler = new Crawler($responseHtml);
+
+    $containerElement = $crawler->filter("[data-test='{$containerTestId}']");
+    // If the container isn't present, that's fine for a negative assertion.
+    if ($containerElement->count() === 0) {
+        return $this;
+    }
+
+    $attributeSelector = buildAttributeSelector($descendantAttributes);
+    $fullSelector = "{$descendantSelector}{$attributeSelector}";
+
+    $matchingDescendants = $containerElement->filter($fullSelector);
+    expect($matchingDescendants->count())
+        ->toBe(0, "Unexpected descendant matching \"{$fullSelector}\" found inside data-test=\"{$containerTestId}\".");
+
+    return $this;
+});
+
+
+expect()->extend('toContainTextInTestId', function (string $containerTestId, string $expectedText) {
+    $responseHtml = $this->value->getContent();
+    $crawler = new Crawler($responseHtml);
+
+    $containerElement = $crawler->filter("[data-test='{$containerTestId}']");
+    expect($containerElement->count())
+        ->toBeGreaterThan(0, "Element with data-test=\"{$containerTestId}\" not found.");
+
+    $normalizedText = preg_replace('/\s+/', ' ', $containerElement->text());
+    expect($normalizedText)
+        ->toContain($expectedText, "Text \"{$expectedText}\" not found in data-test=\"{$containerTestId}\".");
+
+    return $this;
+});
+
+expect()->extend('toNotContainTextInTestId', function (string $containerTestId, string $unexpectedText) {
+    $html     = $this->value->getContent();
+    $crawler  = new Crawler($html);
+
+    $container = $crawler->filter("[data-test='{$containerTestId}']");
+    if ($container->count() === 0) {
+        // If the container doesn't exist, that's fine for a negative text assertion.
+        return $this;
+    }
+
+    $normalized = preg_replace('/\s+/', ' ', $container->text());
+    expect($normalized)->not->toContain(
+        $unexpectedText,
+        "Unexpected text \"{$unexpectedText}\" found in data-test=\"{$containerTestId}\"."
+    );
+
+    return $this;
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +155,13 @@ function something()
 function asUser(array $overrides = []): \App\Models\User
 {
     $user = \App\Models\User::factory()->create($overrides);
-    test()->actingAs($user);
+    test()->actingAs($user, 'web');
     return $user;
+}
+
+function buildAttributeSelector(array $attributes): string
+{
+    return collect($attributes)
+        ->map(fn ($value, $name) => sprintf('[%s="%s"]', $name, addcslashes((string) $value, '"')))
+        ->implode('');
 }

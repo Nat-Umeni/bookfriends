@@ -22,7 +22,7 @@
                             @forelse ($section['books'] as $book)
                                 <x-books.card :book="$book">
                                     <x-slot:links>
-                                        <a href="{{ route('books.edit', $book->id) }}">Edit Book</a>
+                                        <a class="text-blue-500" href="{{ route('books.edit', $book->id) }}">Edit</a>
                                     </x-slot:links>
                                 </x-books.card>
                             @empty

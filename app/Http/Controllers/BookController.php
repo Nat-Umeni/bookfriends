@@ -5,20 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\BookUser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class BookController extends Controller
 {
-
     public function index(Request $request)
     {
         $user = $request->user();
+
         $booksByStatus = $user
-            ? $user
-                ->books()
-                ->get()
-                ->groupBy('pivot.status')
+            ? $user->books()->get()->groupBy('pivot.status')
             : collect();
 
         // Build a dumb, renderable structure for the view
@@ -30,7 +27,6 @@ class BookController extends Controller
             ])
             ->values();
 
-
         return view('home', compact('sections'));
     }
 
@@ -38,22 +34,6 @@ class BookController extends Controller
     {
         return view('books.create', [
             'statuses' => BookUser::rawAllowedStatuses(),
-        ]);
-    }
-
-    public function show(Request $request, Book $book)
-    {
-        // Find this book on the authenticated user's relation
-        $userBook = $request->user()
-            ? $request->user()->books()->whereKey($book->id)->first()
-            : null;
-
-        $selectedStatus = $userBook?->pivot?->status;
-
-        return view('books.edit', [
-            'book' => $book,
-            'statuses' => BookUser::rawAllowedStatuses(),
-            'selectedStatus' => $selectedStatus,
         ]);
     }
 
@@ -77,5 +57,22 @@ class BookController extends Controller
         ]);
 
         return redirect()->route('home');
+    }
+
+    public function edit(Request $request, Book $book)
+    {
+        Gate::authorize('update', $book);
+
+        $userBook = $request->user()
+            ? $request->user()->books()->whereKey($book->id)->first()
+            : null;
+
+        $selectedStatus = $userBook?->pivot?->status;
+
+        return view('books.edit', [
+            'book' => $book,
+            'statuses' => BookUser::rawAllowedStatuses(),
+            'selectedStatus' => $selectedStatus,
+        ]);
     }
 }

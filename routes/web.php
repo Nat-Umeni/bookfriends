@@ -17,18 +17,21 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::prefix('/books')->name('books.')->group(function () {
-        Route::get('/', [BookController::class, 'index'])->name('index');
+    // Route::middleware('auth')->group(function () {
+    //     Route::resource('books', BookController::class)
+    //         ->only(['index', 'create', 'store', 'edit', 'update']);
 
-        Route::get('/{book}/edit', [BookController::class, 'show'])
-            ->name('edit')
-            ->can('update', 'book');
+    //     Route::get('/books/{book}/edit', [BookController::class, 'edit'])
+    //         ->middleware('can:update,book')
+    //         ->name('books.edit');
 
-        Route::patch('/{book}/edit', [BookController::class, 'update'])
-            ->name('update')
-            ->can('update', 'book');
+    //     Route::patch('/books/{book}', [BookController::class, 'update'])
+    //         ->middleware('can:update,book')
+    //         ->name('books.update');
+    // });
 
-        Route::get('/create', [BookController::class, 'create'])->name('create');
-        Route::post('/create', [BookController::class, 'store'])->name('store');
+    Route::middleware('auth')->group(function () {
+        Route::resource('books', BookController::class)
+            ->only(['index', 'create', 'store', 'edit', 'update']);
     });
 });

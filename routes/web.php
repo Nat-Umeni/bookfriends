@@ -23,11 +23,15 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/books')->name('books.')->group(function () {
         Route::get('/', [BookController::class, 'index'])->name('index');
 
-        Route::get('/{book}/edit', [BookController::class, 'show'])->name('edit');
-        Route::patch('/{book}/edit', [BookController::class, 'update'])->name('update');
+        Route::get('/{book}/edit', [BookController::class, 'show'])
+            ->name('edit')
+            ->can('update', 'book');
+
+        Route::patch('/{book}/edit', [BookController::class, 'update'])
+            ->name('update')
+            ->can('update', 'book');
 
         Route::get('/create', [BookController::class, 'create'])->name('create');
         Route::post('/create', [BookController::class, 'store'])->name('store');
     });
-
 });

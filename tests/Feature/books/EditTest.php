@@ -28,13 +28,16 @@ it('shows an edit heading with the book title', function () {
 
 
 it('forbids viewing edit form for a book not attached to this user', function () {
+    // Create a book as someone else
     $someoneElse = asUser();
     $book = Book::factory()->create();
     $someoneElse->books()->attach($book, ['status' => 'READ']);
 
+    // Switch back to the tests first user (from before each)
+    $this->actingAs($this->user);
+    // Try to view the book
     $this->get(route('books.edit', $book))->assertForbidden();
 });
-
 
 
 it('prefills form inputs with the current book', function (string $status) {

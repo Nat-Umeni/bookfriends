@@ -1,6 +1,5 @@
 @php
     $statusKey = $attributes->get('status');
-    $emptyText = $attributes->get('empty', 'No books yet.');
     $dataTest = $attributes->get('data-test') ?: ($statusKey ? "section-{$statusKey}" : null);
 @endphp
 

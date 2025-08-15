@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\BookUser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -17,13 +16,13 @@ class HomeController extends Controller
                 ->get()
                 ->groupBy('pivot.status')
             : collect();
-            
+
         // Build a dumb, renderable structure for the view
         $sections = collect(BookUser::rawAllowedStatuses())
             ->map(fn(string $label, string $key) => [
                 'key' => $key,
                 'label' => $label,
-                'items' => $booksByStatus->get($key, collect()),
+                'books' => $booksByStatus->get($key, collect()),
             ])
             ->values();
 

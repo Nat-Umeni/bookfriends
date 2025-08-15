@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Testing\TestResponse;
 use Symfony\Component\DomCrawler\Crawler;
 
 /*
@@ -28,11 +29,24 @@ pest()->extend(Tests\TestCase::class)
 |
 */
 
-expect()->extend('toHaveInput', function (string $name) {
+expect()->extend('toHaveInput', function (string $name, ?string $expectedValue = null) {
     $crawler = new Crawler($this->value->getContent());
-    expect($crawler->filter("input[name='{$name}']")->count())->toBe(1);
+
+    $input = $crawler->filter("input[name='{$name}']");
+    expect($input->count())
+        ->toBe(1, "Expected exactly 1 input[name='{$name}'], found {$input->count()}");
+
+    if (!is_null($expectedValue)) {
+        $actualValue = $input->attr('value');
+        expect($actualValue)->toBe(
+            $expectedValue,
+            "Expected input[name='{$name}'] value to be \"{$expectedValue}\", got \"" . ($actualValue ?? '') . "\"."
+        );
+    }
+
     return $this;
 });
+
 
 expect()->extend('toHaveSelectWithOptions', function (string $name, array $values) {
     $crawler = new Crawler($this->value->getContent());
@@ -43,14 +57,34 @@ expect()->extend('toHaveSelectWithOptions', function (string $name, array $value
     return $this;
 });
 
+expect()->extend('toHaveSelectWithSelectedOption', function (string $name, ?string $expectedValue = null) {
+    $crawler = new Crawler($this->value->getContent());
 
-expect()->extend('toHaveDescendantWithExactTextInTestId', function (
-    string $containerTestId,
-    string $descendantSelector,
-    string $expectedText
-) {
-    $html     = $this->value->getContent();
-    $crawler  = new Crawler($html);
+    $select = $crawler->filter("select[name='{$name}']");
+    expect($select->count())
+        ->toBe(1, "Expected exactly 1 select[name='{$name}'], found {$select->count()}.");
+
+    // Ensure the specific option exists
+    $option = $select->filter("option[value='{$expectedValue}']");
+    expect($option->count())
+        ->toBeGreaterThan(0, "Option with value '{$expectedValue}' not found in select[name='{$name}'].");
+
+    // Ensure it is selected
+    $isSelected = $option->attr('selected') !== null
+        || $option->matches('option[selected]');
+
+    expect($isSelected)->toBeTrue(
+        "Option value '{$expectedValue}' in select[name='{$name}'] is not selected."
+    );
+
+    return $this;
+});
+
+
+
+expect()->extend('toHaveDescendantWithExactTextInTestId', function (string $containerTestId, string $descendantSelector, string $expectedText) {
+    $html = $this->value->getContent();
+    $crawler = new Crawler($html);
 
     $container = $crawler->filter("[data-test='{$containerTestId}']");
     expect($container->count())
@@ -76,11 +110,7 @@ expect()->extend('toHaveDescendantWithExactTextInTestId', function (
 /**
  * Negative form: assert that NO descendant exists matching the selector + attributes.
  */
-expect()->extend('toNotHaveDescendantInTestId', function (
-    string $containerTestId,
-    string $descendantSelector,
-    array $descendantAttributes = []
-) {
+expect()->extend('toNotHaveDescendantInTestId', function (string $containerTestId, string $descendantSelector, array $descendantAttributes = []) {
     $responseHtml = $this->value->getContent();
     $crawler = new Crawler($responseHtml);
 
@@ -117,8 +147,8 @@ expect()->extend('toContainTextInTestId', function (string $containerTestId, str
 });
 
 expect()->extend('toNotContainTextInTestId', function (string $containerTestId, string $unexpectedText) {
-    $html     = $this->value->getContent();
-    $crawler  = new Crawler($html);
+    $html = $this->value->getContent();
+    $crawler = new Crawler($html);
 
     $container = $crawler->filter("[data-test='{$containerTestId}']");
     if ($container->count() === 0) {
@@ -135,6 +165,12 @@ expect()->extend('toNotContainTextInTestId', function (string $containerTestId, 
     return $this;
 });
 
+expect()->extend('guestToBeRedirectedTo', function (string $route) {
+    Auth::logout();
+    expect($this->value->isRedirect())->toBeTrue();
+    expect($this->value->getTargetUrl())->toBe(route($route));
+    return $this;
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -147,11 +183,6 @@ expect()->extend('toNotContainTextInTestId', function (string $containerTestId, 
 |
 */
 
-function something()
-{
-    // ..
-}
-
 function asUser(array $overrides = []): \App\Models\User
 {
     $user = \App\Models\User::factory()->create($overrides);
@@ -162,6 +193,36 @@ function asUser(array $overrides = []): \App\Models\User
 function buildAttributeSelector(array $attributes): string
 {
     return collect($attributes)
-        ->map(fn ($value, $name) => sprintf('[%s="%s"]', $name, addcslashes((string) $value, '"')))
+        ->map(fn($value, $name) => sprintf('[%s="%s"]', $name, addcslashes((string) $value, '"')))
         ->implode('');
+}
+
+/**
+ * Visit a URL as a GUEST and assert it redirects to the expected URL.
+ *
+ * @param 'get'|'post' $method
+ * @param string       $visitUrl         Full URL (e.g. route('books.edit', 1))
+ * @param string|null  $expectedRedirect Full URL (defaults to route('login'))
+ * @param array        $postData         Request payload for POSTs
+ *
+ * @return TestResponse
+ */
+function asGuestExpectRedirect(string $method, string $visitUrl, ?string $expectedRedirect = null): TestResponse
+{
+    Auth::logout();
+
+    $method = strtolower($method);
+    $response = match ($method) {
+        'get' => test()->get($visitUrl),
+        'post' => test()->post($visitUrl),
+        default => throw new InvalidArgumentException("Unsupported method '{$method}'. Use 'get' or 'post'."),
+    };
+
+    $expectedRedirect ??= route('login');
+
+    expect($response->isRedirect())->toBeTrue("Expected a redirect to {$expectedRedirect}, got a non-redirect response.");
+    expect($response->getTargetUrl())->toBe($expectedRedirect, "Expected redirect to {$expectedRedirect}, got {$response->getTargetUrl()}.");
+    expect($response->status())->toBe(302);
+
+    return $response;
 }

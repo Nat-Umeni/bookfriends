@@ -15,8 +15,20 @@
 
             <div class="mt-8 space-y-6">
                 @foreach ($sections as $section)
-                    <x-books.section :status="$section['key']" :items="$section['items']">
+                    <x-books.section :status="$section['key']">
                         {{ $section['label'] }}
+
+                        <x-slot:content>
+                            @forelse ($section['books'] as $book)
+                                <x-books.card :book="$book">
+                                    <x-slot:links>
+                                        <a href="{{ route('books.edit', $book->id) }}">Edit Book</a>
+                                    </x-slot:links>
+                                </x-books.card>
+                            @empty
+                                <p class="text-slate-500">No books yet.</p>
+                            @endforelse
+                        </x-slot:content>
                     </x-books.section>
                 @endforeach
             </div>

@@ -18,6 +18,22 @@ class BookController extends Controller
         ]);
     }
 
+    public function show(Request $request, Book $book)
+    {
+        // Find this book on the authenticated user's relation
+        $userBook = $request->user()
+            ? $request->user()->books()->whereKey($book->id)->first()
+            : null;
+
+        $selectedStatus = $userBook?->pivot?->status;
+
+        return view('books.edit', [
+            'book' => $book,
+            'statuses' => BookUser::rawAllowedStatuses(),
+            'selectedStatus' => $selectedStatus,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

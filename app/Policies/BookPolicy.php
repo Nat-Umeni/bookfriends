@@ -20,7 +20,7 @@ class BookPolicy
      */
     public function view(User $user, Book $book): bool
     {
-        return $user->books()->whereKey($book->id)->exists();
+        return $user->books->contains($book);
     }
 
     /**
@@ -36,7 +36,7 @@ class BookPolicy
      */
     public function update(User $user, Book $book): bool
     {
-       return $user->books()->whereKey($book->id)->exists();
+       return $user->books->contains($book);
     }
 
     /**

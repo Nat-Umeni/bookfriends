@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\BookUser;
+use InvalidArgumentException;
 
 class User extends Authenticatable
 {
@@ -53,5 +54,51 @@ class User extends Authenticatable
             ->using(BookUser::class)
             ->withPivot('status')
             ->withTimestamps();
+    }
+
+    public function addFriend(User $friend): void
+    {
+        if ($friend->is($this)) {
+            throw new InvalidArgumentException('You cannot add yourself as a friend.');
+        }
+
+        $this->friendsOfMine()->syncWithoutDetaching([
+            $friend->id => ['accepted' => false],
+        ]);
+    }
+
+    public function acceptFriend(User $friend): void
+    {
+        $friend->friendsOfMine()->updateExistingPivot($this->id, ['accepted' => true]);
+    }
+
+    public function friendsOfMine()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+            ->withPivot('accepted');
+    }
+
+    public function friendsOf()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
+            ->withPivot('accepted');
+    }
+
+    public function pendingFriendsOfMine()
+    {
+        return $this->friendsOfMine()
+            ->wherePivot('accepted', false);
+    }
+
+    public function pendingFriendsOf()
+    {
+        return $this->friendsOf()
+            ->wherePivot('accepted', false);
+    }
+
+    public function acceptedFriendsOfMine()
+    {
+        return $this->friendsOfMine()
+            ->wherePivot('accepted', true);
     }
 }

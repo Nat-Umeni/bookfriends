@@ -24,4 +24,13 @@ class FriendsController extends Controller
 
         return back();
     }
+
+    public function update(Request $request, User $friend)
+    {
+        $request->user()->pendingFriendsOf()->updateExistingPivot($friend, [
+            'accepted' => true
+        ]);
+
+        return back();
+    }
 }

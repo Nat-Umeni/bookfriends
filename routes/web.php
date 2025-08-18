@@ -23,4 +23,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/friends', [FriendsController::class, 'index'])->name('friends.index');
     Route::post('/friends', [FriendsController::class, 'store'])->name('friends.store');
+
+    Route::patch('/friends/{friend}', [FriendsController::class, 'update'])->name('friends.update');
 });

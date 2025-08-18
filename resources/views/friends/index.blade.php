@@ -29,7 +29,7 @@
                     Pending Friend Requests
                     <x-slot:content>
                         @foreach ($pendingRequests as $pendingFriend)
-                            <x-card :title="$pendingFriend->name">
+                            <x-card :title="$pendingFriend->name" :subtitle="$pendingFriend->email">
                                 <x-slot:actions>
                                     <form method="POST">
                                         @csrf
@@ -47,10 +47,10 @@
                     Incoming Friend Requests
                     <x-slot:content>
                         @foreach ($requestingFriends as $requestingFriend)
-                            <x-card :title="$requestingFriend->name">
+                            <x-card :title="$requestingFriend->name" :subtitle="$requestingFriend->email">
                                 <x-slot:actions>
-                                    <form method="POST">
-                                        @csrf
+                                    <form method="POST" action="{{ route('friends.update', $requestingFriend->id) }}">
+                                        @csrf @method('PATCH')
                                         <button class="text-green-600 hover:cursor-pointer">Accept</button>
                                     </form>
                                 </x-slot:actions>
@@ -65,7 +65,7 @@
                     Friends
                     <x-slot:content>
                         @foreach ($friends as $friend)
-                            <x-card :title="$friend->name">
+                            <x-card :title="$friend->name" :subtitle="$friend->email">
                                 <x-slot:actions>
                                     <form method="POST">
                                         @csrf
@@ -77,7 +77,6 @@
                     </x-slot:content>
                 </x-section>
             @endif
-
         </div>
     </div>
 @endsection

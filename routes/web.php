@@ -21,9 +21,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('books', BookController::class)
         ->only(['index', 'create', 'store', 'edit', 'update']);
 
-    Route::get('/friends', [FriendsController::class, 'index'])->name('friends.index');
-    Route::post('/friends', [FriendsController::class, 'store'])->name('friends.store');
-
-    Route::patch('/friends/{friend}', [FriendsController::class, 'update'])->name('friends.update');
-    Route::delete('/friends/{friend}', [FriendsController::class, 'destroy'])->name('friends.destroy');
+    Route::resource('friends', FriendsController::class)
+        ->only(['index', 'store', 'update', 'destroy']);
 });

@@ -21,10 +21,10 @@
                         {{ $section['label'] }}
                         <x-slot:content>
                             @foreach ($section['books'] as $book)
-                                <x-card :book="$book">
-                                    <x-slot:links>
+                                <x-card :title="$book->title" :subtitle="$book->author ? 'by ' . $book->author : null">
+                                    <x-slot:actions>
                                         <a class="text-blue-500" href="{{ route('books.edit', $book->id) }}">Edit</a>
-                                    </x-slot:links>
+                                    </x-slot:actions>
                                 </x-card>
                             @endforeach
                         </x-slot:content>

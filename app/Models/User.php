@@ -56,6 +56,11 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function getFriendsAttribute()
+    {
+        return $this->acceptedFriendsOfMine->merge($this->acceptedFriendsOf);
+    }
+
     public function addFriend(User $friend): void
     {
         if ($friend->is($this)) {
@@ -99,6 +104,12 @@ class User extends Authenticatable
     public function acceptedFriendsOfMine()
     {
         return $this->friendsOfMine()
+            ->wherePivot('accepted', true);
+    }
+
+    public function acceptedFriendsOf()
+    {
+        return $this->friendsOf()
             ->wherePivot('accepted', true);
     }
 }

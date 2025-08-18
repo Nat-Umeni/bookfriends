@@ -55,3 +55,35 @@ it('can accept friend requests', function () {
     expect($user->acceptedFriendsOfMine->pluck('id'))->toContain($friend->id);
 
 });
+
+it('can get all friends', function () {
+    $user = User::factory()->create();
+    $friend = User::factory()->create();
+    $anotherFriend = User::factory()->create();
+    $yetAnotherFriend = User::factory()->create();
+
+    $user->addFriend($friend);
+    $user->addFriend($anotherFriend); // not accepted yet
+    $user->addFriend($yetAnotherFriend);
+
+    $friend->acceptFriend($user);
+    $yetAnotherFriend->acceptFriend($user);
+
+    expect($user->friends)->toHaveCount(2);
+    expect($friend->friends)->toHaveCount(1);
+    expect($anotherFriend->friends)->toHaveCount(0);
+    expect($yetAnotherFriend->friends)->toHaveCount(1);
+});
+
+it('can remove a friend', function () {
+    $user = User::factory()->create();
+    $friend = User::factory()->create();
+
+    $user->addFriend($friend);
+    $friend->acceptFriend($user);
+
+    $user->removeFriend($friend);
+
+    expect($user->friends)->toHaveCount(0);
+    expect($friend->friends)->toHaveCount(0);
+});

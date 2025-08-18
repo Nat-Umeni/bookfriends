@@ -22,4 +22,5 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'create', 'store', 'edit', 'update']);
 
     Route::get('/friends', [FriendsController::class, 'index'])->name('friends.index');
+    Route::post('/friends', [FriendsController::class, 'store'])->name('friends.store');
 });

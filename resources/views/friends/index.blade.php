@@ -17,7 +17,7 @@
                 <p>You can add a friend by email below</p>
 
                 <div class="my-8">
-                    <form action="" method="POST" class="space-y-6">
+                    <form action="{{ route('friends.store') }}" method="POST" class="space-y-6">
                         @csrf
                         <x-auth.form.input name="email" autocomplete="off">Your Friends Email</x-auth.form.input>
                         <x-auth.form.button>Add Friend</x-auth.form.button>
@@ -33,7 +33,7 @@
                                 <x-slot:actions>
                                     <form method="POST">
                                         @csrf
-                                        <button class="text-red-600">Cancel</button>
+                                        <button class="text-red-600 hover:cursor-pointer">Cancel</button>
                                     </form>
                                 </x-slot:actions>
                             </x-card>
@@ -51,7 +51,7 @@
                                 <x-slot:actions>
                                     <form method="POST">
                                         @csrf
-                                        <button class="text-green-600">Accept</button>
+                                        <button class="text-green-600 hover:cursor-pointer">Accept</button>
                                     </form>
                                 </x-slot:actions>
                             </x-card>
@@ -69,7 +69,7 @@
                                 <x-slot:actions>
                                     <form method="POST">
                                         @csrf
-                                        <button class="text-red-600">Remove</button>
+                                        <button class="text-red-600 hover:cursor-pointer">Remove</button>
                                     </form>
                                 </x-slot:actions>
                             </x-card>

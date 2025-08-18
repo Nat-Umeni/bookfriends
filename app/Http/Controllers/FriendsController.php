@@ -8,7 +8,10 @@ class FriendsController extends Controller
 {
     public function index(Request $request)
     {
-        $pendingRequests = $request->user()->pendingFriendsOfMine;
-        return view('friends.index', compact('pendingRequests'));
+        return view('friends.index', [
+            'pendingRequests' => $request->user()->pendingFriendsOfMine,
+            'requestingFriends' => $request->user()->pendingFriendsOf,
+            'friends' => $request->user()->friends
+        ]);
     }
 }

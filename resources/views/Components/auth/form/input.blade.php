@@ -10,7 +10,7 @@
 @endphp
 
 <div>
-    <label for="{{ $id }}" class="block text-sm/6 font-medium text-gray-900">{{ $label }}</label>
+    <label for="{{ $id }}" class="block text-sm/6 font-bold text-gray-900">{{ $label }}</label>
     <div class="mt-2">
         <input id="{{ $id }}" name="{{ $name }}" type="{{ $type }}"
             @if ($autocomplete) autocomplete="{{ $autocomplete }}" @endif

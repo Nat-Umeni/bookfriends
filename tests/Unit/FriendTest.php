@@ -96,8 +96,8 @@ it('can get books of friends', function () {
     $friend3 = User::factory()->create();
 
     $friend->books()->attach($bookOne = Book::factory()->create(), ['status' => 'READING']);
-    $friend2->books()->attach($bookTwo = Book::factory()->create(), ['status' => 'WANT_TO_READ', 'updated_at' => now()->subDay()]);
-    $friend3->books()->attach($bookThree = Book::factory()->create(), ['status' => 'READ']);
+    $friend2->books()->attach(Book::factory()->create(), ['status' => 'WANT_TO_READ', 'updated_at' => now()->subDay()]);
+    $friend3->books()->attach(Book::factory()->create(), ['status' => 'READ']);
 
     // User adds first friend and friend accepts
     // (first scenario)

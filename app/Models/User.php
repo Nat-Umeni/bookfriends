@@ -124,10 +124,19 @@ class User extends Authenticatable
         $this->friendsOf()->detach($friend->id);
     }
 
+    // App\Models\User.php
     public function booksOfFriends()
     {
         return $this->hasManyDeepFromRelations($this->friends(), (new User())->books())
-            ->withIntermediate(BookUser::class)
-            ->orderBy('__book_user__updated_at', 'desc');
+            ->withIntermediate(BookUser::class, [
+                'status as pivot_status',
+                'updated_at as pivot_updated_at',
+            ], 'pivot')
+            // ensure we only select book columns + the extras we need
+            ->select('books.*')
+            // the “friend” comes from the friends_view, not users
+            ->addSelect('friends_view.id as friend_id', 'friends_view.name as friend_name')
+            ->orderBy('pivot_updated_at', 'desc');
     }
+
 }

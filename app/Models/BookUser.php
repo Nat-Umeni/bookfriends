@@ -30,12 +30,15 @@ class BookUser extends Pivot
         return array_key_exists($status, static::$allowedStatuses);
     }
 
-    public function getActionAttribute() 
+    // BookUser.php
+    public static function actionFor(string $status): ?string
     {
-        return match ($this->status) {
+        return match ($status) {
             'WANT_TO_READ' => 'wants to read',
             'READING' => 'is reading',
             'READ' => 'has read',
+            default => null,
         };
     }
+
 }

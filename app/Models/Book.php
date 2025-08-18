@@ -22,4 +22,13 @@ class Book extends Model
             ->withTimestamps();
     }
 
+    public function getActionAttribute(): ?string
+    {
+        $status = $this->pivot->status
+            ?? $this->pivot_status
+            ?? $this->__book_user__status
+            ?? null;
+
+        return $status ? BookUser::actionFor($status) : null;
+    }
 }

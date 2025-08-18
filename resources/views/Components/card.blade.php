@@ -24,7 +24,7 @@
     </div>
 
     @isset($actions)
-        <div class="ml-4 shrink-0">
+        <div class="ml-4 shrink-0 flex space-x-2">
             {{ $actions }}
         </div>
     @endisset

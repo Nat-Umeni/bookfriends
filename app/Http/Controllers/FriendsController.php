@@ -33,4 +33,11 @@ class FriendsController extends Controller
 
         return back();
     }
+
+    public function destroy(Request $request, User $friend)
+    {
+        $request->user()->removeFriend($friend);
+
+        return back();
+    }
 }

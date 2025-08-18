@@ -6,23 +6,19 @@
 @section('content')
     <div class="mt-8">
 
-        @if ($pendingRequests->isNotEmpty() || $requestingFriends->isNotEmpty() || $friends->isNotEmpty())
-            <p>All of your friends:</p>
-        @else
-            <p>You have no friends or friend requests yet, get networking!</p>
+        @if ($pendingRequests->isEmpty() || $requestingFriends->isEmpty() || $friends->isEmpty())
+            <p>You have no friends at the moment add some below and check back later!</p>
         @endif
 
         <div class="mt-8 space-y-6">
 
-                <p>You can add a friend by email below</p>
-
-                <div class="my-8">
-                    <form action="{{ route('friends.store') }}" method="POST" class="space-y-6">
-                        @csrf
-                        <x-auth.form.input name="email" autocomplete="off">Your Friends Email</x-auth.form.input>
-                        <x-auth.form.button>Add Friend</x-auth.form.button>
-                    </form>
-                </div>
+            <div class="my-8">
+                <form action="{{ route('friends.store') }}" method="POST" class="space-y-6">
+                    @csrf
+                    <x-auth.form.input name="email" autocomplete="off">Your Friend's Email</x-auth.form.input>
+                    <x-auth.form.button>Add Friend</x-auth.form.button>
+                </form>
+            </div>
 
             @if ($pendingRequests->isNotEmpty())
                 <x-section>
@@ -31,8 +27,8 @@
                         @foreach ($pendingRequests as $pendingFriend)
                             <x-card :title="$pendingFriend->name" :subtitle="$pendingFriend->email">
                                 <x-slot:actions>
-                                    <form method="POST">
-                                        @csrf
+                                    <form method="POST" action="{{ route('friends.destroy', $pendingFriend->id) }}">
+                                        @csrf @method('DELETE')
                                         <button class="text-red-600 hover:cursor-pointer">Cancel</button>
                                     </form>
                                 </x-slot:actions>
@@ -49,10 +45,14 @@
                         @foreach ($requestingFriends as $requestingFriend)
                             <x-card :title="$requestingFriend->name" :subtitle="$requestingFriend->email">
                                 <x-slot:actions>
-                                    <form method="POST" action="{{ route('friends.update', $requestingFriend->id) }}">
-                                        @csrf @method('PATCH')
-                                        <button class="text-green-600 hover:cursor-pointer">Accept</button>
-                                    </form>
+                                        <form method="POST" action="{{ route('friends.destroy', $requestingFriend->id) }}">
+                                            @csrf @method('DELETE')
+                                            <button class="text-red-600 hover:cursor-pointer">Deny</button>
+                                        </form>
+                                        <form method="POST" action="{{ route('friends.update', $requestingFriend->id) }}">
+                                            @csrf @method('PATCH')
+                                            <button class="text-green-600 hover:cursor-pointer">Accept</button>
+                                        </form>
                                 </x-slot:actions>
                             </x-card>
                         @endforeach
@@ -67,8 +67,8 @@
                         @foreach ($friends as $friend)
                             <x-card :title="$friend->name" :subtitle="$friend->email">
                                 <x-slot:actions>
-                                    <form method="POST">
-                                        @csrf
+                                    <form method="POST" action="{{ route('friends.destroy', $friend->id) }}">
+                                        @csrf @method('DELETE')
                                         <button class="text-red-600 hover:cursor-pointer">Remove</button>
                                     </form>
                                 </x-slot:actions>

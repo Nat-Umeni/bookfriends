@@ -6,18 +6,17 @@
             @guest
                 <ul>
                     <li>
-                        <a href="{{ route('home') }}"
-                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Home</a>
+                        <a href="{{ route('home') }}" class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Home</a>
                     </li>
                 </ul>
                 <ul>
                     <li>
                         <a href="{{ route('register') }}"
-                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Register</a>
+                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Register</a>
                     </li>
                     <li>
                         <a href="{{ route('login') }}"
-                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Login</a>
+                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Login</a>
                     </li>
                 </ul>
             @endguest
@@ -25,30 +24,32 @@
             @auth
                 <ul>
                     <li>
-                        <span class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">
+                        <span class="font-bold text-lg text-slate-600 hover:text-slate-800 block">
                             {{ auth()->user()->name }}
                         </span>
                     </li>
                     <li>
-                        <a href="#" class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Feed</a>
+                        <a href="#" class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Feed</a>
                     </li>
                 </ul>
 
                 <ul>
                     <li>
-                        <a href="{{ route('home') }}" class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">My Books</a>
+                        <a href="{{ route('home') }}" class="font-bold text-lg text-slate-600 hover:text-slate-800 block">My Books</a>
                     </li>
                 </ul>
 
                 <ul>
                     <li>
-                        <a href="{{ route('books.create') }}" class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Add a Book</a>
+                        <a href="{{ route('books.create') }}"
+                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Add a Book</a>
                     </li>
                 </ul>
 
                 <ul>
                     <li>
-                        <a href="{{ route('friends.index') }}" class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Friends</a>
+                        <a href="{{ route('friends.index') }}"
+                            class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Friends</a>
                     </li>
                 </ul>
 
@@ -57,7 +58,7 @@
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit"
-                                class="font-bold text-lg text-slate-600 hover:text-slate-800 block py-1">Logout</button>
+                                class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Logout</button>
                         </form>
                     </li>
                 </ul>

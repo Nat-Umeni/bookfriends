@@ -216,6 +216,7 @@ function asGuestExpectRedirect(string $method, string $visitUrl, ?string $expect
         'get' => test()->get($visitUrl),
         'post' => test()->post($visitUrl),
         'patch' => test()->patch($visitUrl),
+        'delete' => test()->delete($visitUrl),
         default => throw new InvalidArgumentException("Unsupported method '{$method}'. Use 'get' or 'post'."),
     };
 

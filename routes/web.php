@@ -25,4 +25,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/friends', [FriendsController::class, 'store'])->name('friends.store');
 
     Route::patch('/friends/{friend}', [FriendsController::class, 'update'])->name('friends.update');
+    Route::delete('/friends/{friend}', [FriendsController::class, 'destroy'])->name('friends.destroy');
 });

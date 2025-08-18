@@ -17,18 +17,18 @@
                 @foreach ($sections as $section)
                     @continue($section['books']->isEmpty())
 
-                    <x-books.section :status="$section['key']">
+                    <x-section :status="$section['key']">
                         {{ $section['label'] }}
                         <x-slot:content>
                             @foreach ($section['books'] as $book)
-                                <x-books.card :book="$book">
+                                <x-card :book="$book">
                                     <x-slot:links>
                                         <a class="text-blue-500" href="{{ route('books.edit', $book->id) }}">Edit</a>
                                     </x-slot:links>
-                                </x-books.card>
+                                </x-card>
                             @endforeach
                         </x-slot:content>
-                    </x-books.section>
+                    </x-section>
                 @endforeach
             </div>
         @endauth

@@ -112,4 +112,9 @@ class User extends Authenticatable
         return $this->friendsOf()
             ->wherePivot('accepted', true);
     }
+
+    public function removeFriend(User $friend): void
+    {
+        $this->friendsOfMine()->detach($friend);
+    }
 }

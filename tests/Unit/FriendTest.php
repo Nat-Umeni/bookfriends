@@ -51,8 +51,9 @@ it('can accept friend requests', function () {
     $user->addFriend($friend);
     $friend->acceptFriend($user);
 
-    expect($user->acceptedFriendsOfMine()->count())->toBe(1);
-    expect($user->acceptedFriendsOfMine->pluck('id'))->toContain($friend->id);
+    expect($user->acceptedFriendsOfMine)
+        ->toHaveCount(1)
+        ->pluck('id')->toContain($friend->id);
 
 });
 

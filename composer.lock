@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1023d4fb763145da0628e4292454ed44",
+    "content-hash": "72c03508b3b4d34b2022bf11afae389e",
     "packages": [
         {
             "name": "brick/math",
@@ -3273,6 +3273,131 @@
                 "source": "https://github.com/ramsey/uuid/tree/4.9.0"
             },
             "time": "2025-06-25T14:20:11+00:00"
+        },
+        {
+            "name": "staudenmeir/laravel-merged-relations",
+            "version": "v1.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/staudenmeir/laravel-merged-relations.git",
+                "reference": "dcd1b2d84ddc95e4918cb995695e055542670077"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/staudenmeir/laravel-merged-relations/zipball/dcd1b2d84ddc95e4918cb995695e055542670077",
+                "reference": "dcd1b2d84ddc95e4918cb995695e055542670077",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^12.0",
+                "php": "^8.2",
+                "staudenmeir/laravel-migration-views": "^1.11"
+            },
+            "require-dev": {
+                "barryvdh/laravel-ide-helper": "^3.0",
+                "laravel/framework": "^12.0",
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench-core": "^10.0",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^11.0",
+                "staudenmeir/eloquent-has-many-deep": "^1.21"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Staudenmeir\\LaravelMergedRelations\\DatabaseServiceProvider",
+                        "Staudenmeir\\LaravelMergedRelations\\IdeHelperServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Staudenmeir\\LaravelMergedRelations\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonas Staudenmeir",
+                    "email": "mail@jonas-staudenmeir.de"
+                }
+            ],
+            "description": "Merged Laravel Eloquent relationships",
+            "support": {
+                "issues": "https://github.com/staudenmeir/laravel-merged-relations/issues",
+                "source": "https://github.com/staudenmeir/laravel-merged-relations/tree/v1.10"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/JonasStaudenmeir",
+                    "type": "custom"
+                }
+            ],
+            "time": "2025-02-22T10:41:19+00:00"
+        },
+        {
+            "name": "staudenmeir/laravel-migration-views",
+            "version": "v1.11.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/staudenmeir/laravel-migration-views.git",
+                "reference": "0a930da7f3a708e9472a6f6f7e8ae2d2d80c3ba2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/staudenmeir/laravel-migration-views/zipball/0a930da7f3a708e9472a6f6f7e8ae2d2d80c3ba2",
+                "reference": "0a930da7f3a708e9472a6f6f7e8ae2d2d80c3ba2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^12.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "laravel/framework": "^12.0",
+                "orchestra/testbench-core": "^10.0",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Staudenmeir\\LaravelMigrationViews\\DatabaseServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Staudenmeir\\LaravelMigrationViews\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonas Staudenmeir",
+                    "email": "mail@jonas-staudenmeir.de"
+                }
+            ],
+            "description": "Laravel database migrations with SQL views",
+            "support": {
+                "issues": "https://github.com/staudenmeir/laravel-migration-views/issues",
+                "source": "https://github.com/staudenmeir/laravel-migration-views/tree/v1.11.1"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/JonasStaudenmeir",
+                    "type": "custom"
+                }
+            ],
+            "time": "2025-06-29T11:19:07+00:00"
         },
         {
             "name": "symfony/clock",

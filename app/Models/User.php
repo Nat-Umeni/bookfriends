@@ -8,11 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\BookUser;
 use InvalidArgumentException;
+use Staudenmeir\LaravelMergedRelations\Eloquent\HasMergedRelationships;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasMergedRelationships;
 
     /**
      * The attributes that are mass assignable.
@@ -56,9 +57,9 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    public function getFriendsAttribute()
+    public function friends()
     {
-        return $this->acceptedFriendsOfMine->merge($this->acceptedFriendsOf);
+        return $this->mergedRelationWithModel(User::class, 'friends_view');
     }
 
     public function addFriend(User $friend): void

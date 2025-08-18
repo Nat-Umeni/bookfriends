@@ -12,6 +12,7 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "staudenmeir/eloquent-has-many-deep": "^1.7",
         "staudenmeir/laravel-merged-relations": "^1.0"
     },
     "require-dev": {

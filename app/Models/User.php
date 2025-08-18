@@ -8,12 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\BookUser;
 use InvalidArgumentException;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 use Staudenmeir\LaravelMergedRelations\Eloquent\HasMergedRelationships;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasMergedRelationships;
+    use HasFactory, Notifiable, HasMergedRelationships, HasRelationships;
 
     /**
      * The attributes that are mass assignable.
@@ -121,5 +122,12 @@ class User extends Authenticatable
 
         // If the other person initiated the request / friendship
         $this->friendsOf()->detach($friend->id);
+    }
+
+    public function booksOfFriends()
+    {
+        return $this->hasManyDeepFromRelations($this->friends(), (new User())->books())
+            ->withIntermediate(BookUser::class)
+            ->orderBy('__book_user__updated_at', 'desc');
     }
 }

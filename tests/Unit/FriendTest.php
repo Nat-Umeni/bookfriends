@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-
+use App\Models\Book;
 
 it('does not allow adding yourself as a friend', function () {
     $user = User::factory()->create();
@@ -87,4 +87,34 @@ it('can remove a friend', function () {
 
     expect($user->friends)->toHaveCount(0);
     expect($friend->friends)->toHaveCount(0);
+});
+
+it('can get books of friends', function () {
+    $user = User::factory()->create();
+    $friend = User::factory()->create();
+    $friend2 = User::factory()->create();
+    $friend3 = User::factory()->create();
+
+    $friend->books()->attach($bookOne = Book::factory()->create(), ['status' => 'READING']);
+    $friend2->books()->attach($bookTwo = Book::factory()->create(), ['status' => 'WANT_TO_READ', 'updated_at' => now()->subDay()]);
+    $friend3->books()->attach($bookThree = Book::factory()->create(), ['status' => 'READ']);
+
+    // User adds first friend and friend accepts
+    // (first scenario)
+    $user->addFriend($friend);
+    $friend->acceptFriend($user);
+
+    // Friend 2 adds User, user accepts
+    // (second scenario, covers the both way around logic)
+    $friend2->addFriend($user);
+    $user->acceptFriend($friend2);
+
+    // User adds friend 3, but is not accepted
+    // (third scenario)
+    $user->addFriend($friend3);
+
+    expect($user->booksOfFriends)
+        ->toHaveCount(2)
+        ->first()->title->toBe($bookOne->title);
+
 });

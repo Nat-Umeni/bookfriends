@@ -29,7 +29,7 @@
                         </span>
                     </li>
                     <li>
-                        <a href="#" class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Feed</a>
+                        <a href="{{ route('feed.index') }}" class="font-bold text-lg text-slate-600 hover:text-slate-800 block">Feed</a>
                     </li>
                 </ul>
 

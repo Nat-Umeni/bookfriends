@@ -133,36 +133,39 @@ expect()->extend('toNotHaveDescendantInTestId', function (string $containerTestI
 });
 
 
-expect()->extend('toContainTextInTestId', function (string $containerTestId, string $expectedText) {
-    $responseHtml = $this->value->getContent();
-    $crawler = new Crawler($responseHtml);
+expect()->extend('toContainTextInTestId', function (string $containerTestId, string|array $expected) {
+    $response = $this->value; // should be a TestResponse
+    $crawler = new Crawler($response->getContent());
 
-    $containerElement = $crawler->filter("[data-test='{$containerTestId}']");
-    expect($containerElement->count())
-        ->toBeGreaterThan(0, "Element with data-test=\"{$containerTestId}\" not found.");
+    $container = $crawler->filter("[data-testid='{$containerTestId}']");
+    expect($container->count())->toBeGreaterThan(0, "Element [data-testid='{$containerTestId}'] not found.");
 
-    $normalizedText = preg_replace('/\s+/', ' ', $containerElement->text());
-    expect($normalizedText)
-        ->toContain($expectedText, "Text \"{$expectedText}\" not found in data-test=\"{$containerTestId}\".");
+    $normalized = trim(preg_replace('/\s+/', ' ', $container->text()));
+
+    foreach ((array) $expected as $needle) {
+        // no custom message arg here — just assert
+        expect($normalized)->toContain($needle);
+    }
 
     return $this;
 });
 
-expect()->extend('toNotContainTextInTestId', function (string $containerTestId, string $unexpectedText) {
-    $html = $this->value->getContent();
+expect()->extend('toNotContainTextInTestId', function (string $containerTestId, string|array $unexpected) {
+    $html = $this->value->getContent(); // TestResponse expected
     $crawler = new Crawler($html);
 
-    $container = $crawler->filter("[data-test='{$containerTestId}']");
+    // NOTE: data-testid (not data-test)
+    $container = $crawler->filter("[data-testid='{$containerTestId}']");
     if ($container->count() === 0) {
-        // If the container doesn't exist, that's fine for a negative text assertion.
+        // Keep your original semantics: missing container = pass
         return $this;
     }
 
-    $normalized = preg_replace('/\s+/', ' ', $container->text());
-    expect($normalized)->not->toContain(
-        $unexpectedText,
-        "Unexpected text \"{$unexpectedText}\" found in data-test=\"{$containerTestId}\"."
-    );
+    $normalized = trim(preg_replace('/\s+/', ' ', $container->text()));
+
+    foreach ((array) $unexpected as $needle) {
+        expect($normalized)->not->toContain($needle);
+    }
 
     return $this;
 });

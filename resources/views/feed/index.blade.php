@@ -8,6 +8,9 @@
         <div class="mt-8 space-y-6">
             <x-section>
                 <x-slot:content>
+                    @if($books->isEmpty())
+                        <p>It's really empty in here... nudge your friends to get reading</p>
+                    @endif
                     @foreach ($books as $book)
                         <x-card :title="trim(($book->friend_name ?? 'Someone') . ' ' . ($book->action ?? ''))" :subtitle="trim($book->title . ($book->author ? ' by ' . $book->author : ''))">
                             <x-slot:actions>

@@ -19,7 +19,11 @@ class OAuthController extends Controller
         $driver = Socialite::driver($provider);
 
         if ($provider === 'google') {
-            $driver = $driver->scopes(['openid', 'profile', 'email']);
+            return back()->withErrors([
+               'email' => "I haven't implemented Google OAuth yet, bear with me. 😬",
+            ]);
+            // Add below in when adding google oauth
+            //$driver = $driver->scopes(['openid', 'profile', 'email']);
         }
 
         return $driver->redirect();

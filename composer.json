@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
+        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
         "staudenmeir/eloquent-has-many-deep": "^1.7",
         "staudenmeir/laravel-merged-relations": "^1.0"

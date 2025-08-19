@@ -17,12 +17,14 @@
 
             <x-auth.form.input name="name" autocomplete="name" required>Name</x-auth.form.input>
             <x-auth.form.input name="email" type="email" autocomplete="email" required>Email address</x-auth.form.input>
-            <x-auth.form.input name="password" type="password" autocomplete="new-password" required>Password</x-auth.form.input>
+            <x-auth.form.input name="password" type="password" autocomplete="new-password"
+                required>Password</x-auth.form.input>
             <x-auth.form.input name="password_confirmation" type="password" required>Confirm Password</x-auth.form.input>
 
             <x-auth.form.button>Create Account</x-auth.form.button>
         </form>
 
-        <x-auth.oauth.section title="Or register with" google="#" github="#" />
+        <x-auth.oauth.section title="Or sign in with" google="{{ route('auth.oauth.redirect', ['provider' => 'google']) }}"
+            github="{{ route('auth.oauth.redirect', ['provider' => 'github']) }}" />
     </div>
 @endsection

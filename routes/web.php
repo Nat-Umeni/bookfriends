@@ -2,12 +2,26 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\FeedController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [BookController::class, 'index'])->name('home');
+
+Route::prefix('auth')->name('auth.oauth.')->group(function () {
+    // Guests must be able to start and finish OAuth
+    Route::get('{provider}/redirect', [OAuthController::class, 'redirect'])
+        ->where('provider', 'github|google')
+        ->middleware('guest')
+        ->name('redirect');
+
+    Route::get('{provider}/callback', [OAuthController::class, 'callback'])
+        ->where('provider', 'github|google')
+        ->middleware('guest')
+        ->name('callback');
+});
 
 Route::middleware('guest')->group(function () {
     Route::view('/register', 'guest.register')->name('register');

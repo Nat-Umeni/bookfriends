@@ -2,6 +2,8 @@
 
 use Illuminate\Testing\TestResponse;
 use Symfony\Component\DomCrawler\Crawler;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Contracts\User as SocialiteUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -227,4 +229,68 @@ function asGuestExpectRedirect(string $method, string $visitUrl, ?string $expect
     expect($response->status())->toBe(302);
 
     return $response;
+}
+
+/** Minimal fake Socialite user that works for any oauth provider */
+function fakeSocialUser(array $overrides = []): SocialiteUser
+{
+    return new class ($overrides) implements SocialiteUser {
+        public string $id;
+        public ?string $nickname;
+        public ?string $name;
+        public ?string $email;
+        public ?string $avatar;
+        public $token;
+        public $refreshToken;
+        public $expiresIn;
+
+        public function __construct(array $overrides)
+        {
+            $d = array_merge([
+                'id' => '12345',
+                'nickname' => 'octo',
+                'name' => 'OAuth User',
+                'email' => 'oauth@example.test',
+                'avatar' => 'https://example.test/avatar.png',
+                'token' => 'fake-token',
+                'refreshToken' => 'fake-refresh',
+                'expiresIn' => 3600,
+            ], $overrides);
+
+            $this->id = (string) $d['id'];
+            $this->nickname = $d['nickname'];
+            $this->name = $d['name'];
+            $this->email = $d['email'];
+            $this->avatar = $d['avatar'];
+            $this->token = $d['token'];
+            $this->refreshToken = $d['refreshToken'];
+            $this->expiresIn = $d['expiresIn'];
+        }
+
+        public function getId() { return $this->id; }
+        public function getNickname() { return $this->nickname; }
+        public function getName() { return $this->name; }
+        public function getEmail() { return $this->email; }
+        public function getAvatar() { return $this->avatar; }
+    };
+}
+
+/** Mock redirect for a given provider */
+function mockSocialiteRedirect(string $provider, string $toUrl): void
+{
+    Socialite::shouldReceive('driver')
+        ->once()->with($provider)->andReturnSelf();
+
+    Socialite::shouldReceive('redirect')
+        ->once()->andReturn(redirect()->away($toUrl));
+}
+
+/** Mock user() for a given provider on callback */
+function mockSocialiteUser(string $provider, SocialiteUser $user): void
+{
+    Socialite::shouldReceive('driver')
+        ->once()->with($provider)->andReturnSelf();
+
+    Socialite::shouldReceive('user')
+        ->once()->andReturn($user);
 }

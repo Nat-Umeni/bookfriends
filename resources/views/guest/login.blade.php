@@ -15,10 +15,11 @@
         <form action="{{ route('login.store') }}" method="POST" class="space-y-6">
             @csrf
             <x-auth.form.input name="email" type="email" autocomplete="email" required>Email address</x-auth.form.input>
-            <x-auth.form.input name="password" type="password" autocomplete="current-password" required>Password</x-auth.form.input>
+            <x-auth.form.input name="password" type="password" autocomplete="current-password"
+                required>Password</x-auth.form.input>
             <x-auth.form.button>Sign in</x-auth.form.button>
         </form>
+        <x-auth.oauth.section title="Or sign in with" google="{{ route('auth.oauth.redirect', ['provider' => 'google']) }}"
+            github="{{ route('auth.oauth.redirect', ['provider' => 'github']) }}" />
     </div>
-
-    <x-auth.oauth.section title="Or sign in with" google="#" github="#" />
 @endsection

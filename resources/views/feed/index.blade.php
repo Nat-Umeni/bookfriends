@@ -9,13 +9,11 @@
             <x-section>
                 <x-slot:content>
                     @foreach ($books as $book)
-                        <x-card :title="trim(
-                            ($book->friend_name ?? 'Someone') . ' ' . ($book->action ?? '') . ' ' . $book->title,
-                        )" :subtitle="optional(
-                            \Illuminate\Support\Carbon::parse($book->pivot_updated_at ?? $book->updated_at),
-                        )->diffForHumans()">
+                        <x-card :title="trim(($book->friend_name ?? 'Someone') . ' ' . ($book->action ?? ''))" :subtitle="trim($book->title . ($book->author ? ' by ' . $book->author : ''))">
                             <x-slot:actions>
-                                {{-- <a class="text-blue-500" href="{{ route('books.edit', $book->id) }}">Edit</a> --}}
+                                <span class="text-sm text-slate-500">
+                                    {{ optional(\Illuminate\Support\Carbon::parse($book->pivot_updated_at ?? $book->updated_at))->diffForHumans() }}
+                                </span>
                             </x-slot:actions>
                         </x-card>
                     @endforeach
